@@ -1,6 +1,8 @@
 using CitiesInfo.API;
+using CitiesInfo.API.DbContexts;
 using CitiesInfo.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 using Sentry.Extensibility;
 using Serilog;
 using Serilog.Events;
@@ -71,6 +73,9 @@ builder.Services.AddTransient<IMailService, CloudMailService>();
 
 
 builder.Services.AddSingleton<CitiesDataStore>();
+
+builder.Services.AddDbContext<CityInfoContext>(
+    dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultDevConnection"]));
 
 var app = builder.Build();
 
