@@ -73,9 +73,13 @@ builder.Services.AddTransient<IMailService, CloudMailService>();
 
 
 builder.Services.AddSingleton<CitiesDataStore>();
-
 builder.Services.AddDbContext<CityInfoContext>(
     dbContextOptions => dbContextOptions.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultDevConnection"]));
+
+builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
+
+// To map between entities and different DTOs
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
