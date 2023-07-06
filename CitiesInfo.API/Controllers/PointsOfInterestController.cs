@@ -95,41 +95,35 @@ namespace CitiesInfo.API.Controllers
             return Ok(_mapper.Map<PointOfInterestDto>(poi));
         }
 
-        //[HttpPost]
-        //public ActionResult<PointOfInterestDto> CreatePointOfInterest(int cityId, PointOfInterestForCreationDto pointOfInterest)
-        //{
+        [HttpPost]
+        public async Task<ActionResult<PointOfInterestDto>> CreatePointOfInterest(int cityId, PointOfInterestForCreationDto pointOfInterest)
+        {
 
-           
+            // Validate if city exists
+            if (!await _cityInfoRepository.CityExistsAsync(cityId))
+            {
+                return NotFound();
+            }
 
-        //    // Validate if city exists
-        //    var city = _citiesDataStore.Cities.FirstOrDefault(c => c.Id == cityId);
 
-        //    if (city == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var finalPointOfInterest = _mapper.Map<Entities.PointOfInterest>(pointOfInterest);
+                        
+            await _cityInfoRepository.AddPointOfInterestForCityAsync(
+                cityId, finalPointOfInterest );
 
-        //    // just a temp solution
-        //    var maxPointOfInterestId = _citiesDataStore.Cities.SelectMany(
-        //                       c => c.PointsOfInterests).Max(p => p.Id);
+            await _cityInfoRepository.SaveChangesAsync();
 
-        //    var finalPointOfInterest = new PointOfInterestDto()
-        //    {
-        //        Id = ++maxPointOfInterestId,
-        //        Name = pointOfInterest.Name,
-        //        Description = pointOfInterest.Description,
-        //    };
+            var createdPointOfInterestToReturn =
+                _mapper.Map<Models.PointOfInterestDto>(finalPointOfInterest);
 
-        //    city.PointsOfInterests.Add(finalPointOfInterest);
-
-        //    return CreatedAtRoute("GetPointOfInterest",
-        //        new
-        //        {
-        //            cityId = cityId,
-        //            poiId= finalPointOfInterest.Id
-        //        },
-        //        finalPointOfInterest);
-        //}
+            return CreatedAtRoute("GetPointOfInterest",
+                new
+                {
+                    cityId = cityId,
+                    poiId = createdPointOfInterestToReturn.Id
+                },
+                createdPointOfInterestToReturn);
+        }
 
 
         //[HttpPut("{poiId}")]
