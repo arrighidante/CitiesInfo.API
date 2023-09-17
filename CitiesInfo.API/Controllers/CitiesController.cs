@@ -8,8 +8,10 @@ using System.Text.Json;
 namespace CitiesInfo.API.Controllers
 {
     [ApiController]
-    [Authorize]
-    [Route("api/cities")]
+    //[Authorize]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
+    [Route("api/v{version:apiVersion}/cities")]
     public class CitiesController : ControllerBase
     {
 
@@ -60,10 +62,21 @@ namespace CitiesInfo.API.Controllers
             */
         }
 
+
+        /// <summary>
+        /// Get a city by id
+        /// </summary>
+        /// <param name="id">The id of the city to get</param>
+        /// <param name="includePointsOfInterest">Whether or not to include the points of interest</param>
+        /// <returns>An IActionResult</returns>
+        /// <response code="200">Returns the requested city</response>
         [HttpGet("{id}")]
         // CityDto it´s not exactly what the endpoint is going to return:
         //          public async Task<ActionResult<CityDto>> GetCity
         // so, instead, we'll use  Task<IActionResult> which is a more generic approach
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCity(
             int id, 
             bool includePointsOfInterest = false)
