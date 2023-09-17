@@ -2,6 +2,7 @@
 using CitiesInfo.API.Entities;
 using CitiesInfo.API.Models;
 using CitiesInfo.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ using System.Transactions;
 namespace CitiesInfo.API.Controllers
 {
     [Route("api/cities/{cityId}/pointsofinterest")]
+    [Authorize(Policy = "MustBeFromAntwerp")]
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
@@ -99,7 +101,7 @@ namespace CitiesInfo.API.Controllers
         [HttpPost]
         public async Task<ActionResult<PointOfInterestDto>> CreatePointOfInterest(int cityId, PointOfInterestForCreationDto pointOfInterest)
         {
-
+                        
             // Validate if city exists
             if (!await _cityInfoRepository.CityExistsAsync(cityId))
             {
