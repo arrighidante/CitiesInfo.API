@@ -8,7 +8,7 @@ using System.Text.Json;
 namespace CitiesInfo.API.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [ApiVersion("1.0")]
     [ApiVersion("2.0")]
     [Route("api/v{version:apiVersion}/cities")]
